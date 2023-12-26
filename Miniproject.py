@@ -4,47 +4,6 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-# Transformations applied on each image
-transform = transforms.Compose([
-    transforms.ToTensor(),  # Convert images to PyTorch tensors
-    transforms.Normalize((0.5,), (0.5,))  # Normalize the images
-])
-
-# Loading the training and test datasets
-train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
-test_dataset = datasets.MNIST(root='./data', train=False, download=True, transform=transform)
-
-# Data loaders
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
-
-# Example neural network models with different configurations
-def create_model(hidden_layers, hidden_size):
-    layers = [nn.Flatten()]
-    input_size = 784  # MNIST images are 28x28
-
-    # Add hidden layers
-    for i in range(hidden_layers):
-        layers.append(nn.Linear(input_size if i == 0 else hidden_size, hidden_size))
-        layers.append(nn.ReLU())
-
-    # Output layer
-    layers.append(nn.Linear(hidden_size, 10))
-    layers.append(nn.LogSoftmax(dim=1))
-    return nn.Sequential(*layers)
-
-# Example usage
-model_simple = create_model(hidden_layers=1, hidden_size=128)  # Simple model with 1 hidden layer
-model_complex = create_model(hidden_layers=3, hidden_size=64)  # More complex model with 3 hidden layers
-
-
-# Select a model and loss function
-#model = model_simple
-model = model_complex
-loss_fn = nn.CrossEntropyLoss()
-
-# Define the optimizer
-optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Function to calculate accuracy
 def calculate_accuracy(loader, model):
@@ -58,36 +17,104 @@ def calculate_accuracy(loader, model):
             correct += (predicted == labels).sum().item()
     return 100 * correct / total
 
-num_epochs = 10
-# Training loop with progress printout and evaluation at each epoch
-for epoch in range(num_epochs):
-    running_loss = 0.0
-    for i, (images, labels) in enumerate(train_loader):
-        # Forward pass
-        outputs = model(images)
-        loss = loss_fn(outputs, labels)
+# Function for training
+def train_model(model, train_loader, test_loader, optimizer, loss_fn, num_epochs):
+    for epoch in range(num_epochs):
+        running_loss = 0.0
+        for i, (images, labels) in enumerate(train_loader):
+            # Forward pass
+            outputs = model(images)
+            loss = loss_fn(outputs, labels)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
 
-        # Backward pass and optimization
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+            running_loss += loss.item()
+            if i % 100 == 99:    # print every 100 mini-batches
+                print(f'Epoch {epoch+1}, Batch {i+1}, Loss: {running_loss / 100:.4f}')
+                running_loss = 0.0
 
-        running_loss += loss.item()
-        if i % 100 == 99:    # print every 100 mini-batches
-            print(f'Epoch {epoch+1}, Batch {i+1}, Loss: {running_loss / 100:.4f}')
-            running_loss = 0.0
+        # Evaluate after each epoch
+        accuracy = calculate_accuracy(test_loader, model)
+        print(f'End of Epoch {epoch+1}, Accuracy: {accuracy}%')
 
-    # Evaluate after each epoch
-    accuracy = calculate_accuracy(test_loader, model)
-    print(f'End of Epoch {epoch+1}, Accuracy: {accuracy}%')
+
+model1 = nn.Sequential(
+    nn.Flatten(),
+    nn.Linear(784, 128),
+    nn.ReLU(),
+    nn.Linear(128, 10)
+)
+model2 = nn.Sequential(
+    nn.Flatten(),
+    nn.Linear(784, 128),
+    nn.ReLU(),
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Linear(64, 32),
+    nn.ReLU(),
+    nn.Linear(32, 10)
+)
+model3 = nn.Sequential(
+    nn.Flatten(),
+    nn.Linear(784, 256),
+    nn.ReLU(),
+    nn.Linear(256, 256),
+    nn.ReLU(),
+    nn.Linear(256, 128),
+    nn.ReLU(),
+    nn.Linear(128, 64),
+    nn.ReLU(),
+    nn.Linear(64, 32),
+    nn.ReLU(),
+    nn.Linear(32, 10)
+)
+
+
+# Rest of the setup (transforms, dataset, dataloader)
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,), (0.5,))
+])
+
+train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
+test_dataset = datasets.MNIST(root='./data', train=False, download=True, transform=transform)
+
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
+
+# Loss function and optimizer
+#loss_fn = nn.CrossEntropyLoss()
+loss_fn = nn.NLLLoss()
+optimizer1 = optim.Adam(model1.parameters(), lr=0.001)
+optimizer2 = optim.Adam(model2.parameters(), lr=0.001)
+optimizer3 = optim.Adam(model3.parameters(), lr=0.001)
+
+# Train the model
+num_epochs = 1
+train_model(model1, train_loader, test_loader, optimizer1, loss_fn, num_epochs)
+train_model(model2, train_loader, test_loader, optimizer2, loss_fn, num_epochs)
+train_model(model3, train_loader, test_loader, optimizer3, loss_fn, num_epochs)
+
+print("\n\nModel1: ")
+print(model1)
+print("accuracy: " + str(calculate_accuracy(test_loader, model1)))
+
+print("\n\nModel2: ")
+print(model2)
+print("accuracy: " + str(calculate_accuracy(test_loader, model2)))
+
+print("\n\nModel3: ")
+print(model3)
+print("accuracy: " + str(calculate_accuracy(test_loader, model3)))
 
 
 
 '''
-The perfomance of several numbers of hidden layers:
-- 2 Hidden layers: 96.71% (epochs = 10)
-- 3 Hidden layers: 97.26% (epochs = 50)
-- 10 Hidden layers: 
+The perfomance of several numbers of hidden layers (epochs = 10):
+- 2 Hidden layers: 96.71% 
+- 3 Hidden layers: 96.87%
+- 3 Hidden layers: 97.26% 
 
 Sizes of hidden layers:
 
