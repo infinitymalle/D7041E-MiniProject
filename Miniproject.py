@@ -43,7 +43,8 @@ model1 = nn.Sequential(
     nn.Flatten(),
     nn.Linear(784, 128),
     nn.ReLU(),
-    nn.Linear(128, 10)
+    nn.Linear(128, 10),
+    #nn.LogSoftmax(dim=1)    #Comment out when running with nn.CrossEntryLoss()
 )
 model2 = nn.Sequential(
     nn.Flatten(),
@@ -53,7 +54,8 @@ model2 = nn.Sequential(
     nn.ReLU(),
     nn.Linear(64, 32),
     nn.ReLU(),
-    nn.Linear(32, 10)
+    nn.Linear(32, 10),
+    #nn.LogSoftmax(dim=1)    #Comment out when running with nn.CrossEntryLoss()
 )
 model3 = nn.Sequential(
     nn.Flatten(),
@@ -67,11 +69,10 @@ model3 = nn.Sequential(
     nn.ReLU(),
     nn.Linear(64, 32),
     nn.ReLU(),
-    nn.Linear(32, 10)
+    nn.Linear(32, 10),
+    #nn.LogSoftmax(dim=1)    #Comment out when running with nn.CrossEntryLoss()
 )
 
-
-# Rest of the setup (transforms, dataset, dataloader)
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,))
@@ -83,15 +84,18 @@ test_dataset = datasets.MNIST(root='./data', train=False, download=True, transfo
 train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
 
-# Loss function and optimizer
-#loss_fn = nn.CrossEntropyLoss()
-loss_fn = nn.NLLLoss()
+# Cost/loss function
+
+loss_fn = nn.CrossEntropyLoss()
+#loss_fn = nn.NLLLoss()
+
+
 optimizer1 = optim.Adam(model1.parameters(), lr=0.001)
 optimizer2 = optim.Adam(model2.parameters(), lr=0.001)
 optimizer3 = optim.Adam(model3.parameters(), lr=0.001)
 
 # Train the model
-num_epochs = 1
+num_epochs = 10
 train_model(model1, train_loader, test_loader, optimizer1, loss_fn, num_epochs)
 train_model(model2, train_loader, test_loader, optimizer2, loss_fn, num_epochs)
 train_model(model3, train_loader, test_loader, optimizer3, loss_fn, num_epochs)
@@ -111,13 +115,14 @@ print("accuracy: " + str(calculate_accuracy(test_loader, model3)))
 
 
 '''
-The perfomance of several numbers of hidden layers (epochs = 10):
-- 2 Hidden layers: 96.71% 
-- 3 Hidden layers: 96.87%
-- 3 Hidden layers: 97.26% 
-
-Sizes of hidden layers:
-
-Different cost functions:
+Performances of models with different number of hidden layers for different cost/loss functions:
+nn.CrossEntropyLoss()
+- 0 Hidden layers: 97.5% 
+- 2 Hidden layers: 96.95%
+- 4 Hidden layers: 97.64% 
+nn.NLLLoss()
+- 0 Hidden layers: 97.71% 
+- 2 Hidden layers: 97.0%
+- 4 Hidden layers: 97.29% 
 
 '''
