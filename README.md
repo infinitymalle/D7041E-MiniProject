@@ -1,6 +1,6 @@
 # Malkolm Lundkvist & Peggy Khialie
 
-# D7041E-MiniProject
+# D7041E-MiniProject Group 11
 Mini project in course D7041E Applied Artificial Intelligence
 
 
