@@ -14,5 +14,15 @@ https://machinelearningmastery.com/building-multilayer-perceptron-models-in-pyto
 
 # Link to Youtube video: 
 
+
+# Result
+- 0 Hidden layers: 97.5% 
+- 2 Hidden layers: 96.95%
+- 4 Hidden layers: 97.64% 
+nn.NLLLoss()
+- 0 Hidden layers: 97.71% 
+- 2 Hidden layers: 97.0%
+- 4 Hidden layers: 97.29%
+
 # Run the code
-Remeber to comment out and in the LogSoftMax as explained in the video. Otherwise it is just to run the code. The expected result is documented in the code and should land araound 95-98 %. 
+Remeber to comment out the LogSoftMax as explained in the video. Otherwise it is just to run the code. The expected result is documented in the code and should land araound 95-98 %. 
