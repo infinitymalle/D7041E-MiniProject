@@ -18,7 +18,8 @@ https://machinelearningmastery.com/building-multilayer-perceptron-models-in-pyto
 # Result
 - 0 Hidden layers: 97.5% 
 - 2 Hidden layers: 96.95%
-- 4 Hidden layers: 97.64% 
+- 4 Hidden layers: 97.64%
+
 nn.NLLLoss()
 - 0 Hidden layers: 97.71% 
 - 2 Hidden layers: 97.0%
