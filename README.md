@@ -1,4 +1,6 @@
-# Malkolm Lundkvist & Peggy Khialie
+# Authors
+Malkolm Lundkvist - amouli-0@ltu.student.se
+Peggy Khialie - pegkhi0@ltu.student.se
 
 # D7041E-MiniProject Group 11
 Mini project in course D7041E Applied Artificial Intelligence
