@@ -13,7 +13,7 @@ https://machinelearningmastery.com/building-multilayer-perceptron-models-in-pyto
 - Dataset is imported in the code
 
 # Link to Youtube video: 
-
+https://youtu.be/Ln7z27jo-HM
 
 # Result
 Performances of models with different number of hidden layers for different cost/loss functions:
