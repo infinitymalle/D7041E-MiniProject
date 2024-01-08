@@ -29,4 +29,4 @@ Negative Log-Likelihood Loss
 - 4 Hidden layers: 97.29%
 
 # Run the code
-Remeber to comment out the LogSoftMax as explained in the video. Otherwise it is just to run the code. The expected result is documented in the code and should land araound 95-98 %. 
+Remeber to comment out the LogSoftMax as explained in the video. Otherwise it is just to run the code. 
