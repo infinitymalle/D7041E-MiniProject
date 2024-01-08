@@ -18,12 +18,12 @@ https://machinelearningmastery.com/building-multilayer-perceptron-models-in-pyto
 # Result
 Performances of models with different number of hidden layers for different cost/loss functions:
 
-nn.CrossEntropyLoss()
+Cross-Entropy Loss
 - 0 Hidden layers: 97.5% 
 - 2 Hidden layers: 96.95%
 - 4 Hidden layers: 97.64%
 
-nn.NLLLoss()
+Negative Log-Likelihood Loss
 - 0 Hidden layers: 97.71% 
 - 2 Hidden layers: 97.0%
 - 4 Hidden layers: 97.29%
